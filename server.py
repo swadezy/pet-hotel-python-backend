@@ -13,7 +13,7 @@ def api_all():
     connection = psycopg2.connect(**params)
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     if request.method == 'GET':
-        query = 'SELECT "owners".*, COUNT("pets".id) AS "pet_count" FROM "owners" LEFT JOIN "pets" ON "owners".id = "pets".owner_id GROUP BY "owners".id, "pets".id;'
+        query = 'SELECT "owners".*, COUNT("pets".id) AS "pet_count" FROM "owners" LEFT JOIN "pets" ON "owners".id = "pets".owner_id GROUP BY "owners".id;'
         # execute query
         cursor.execute(query)
         # Selecting rows from table using cursor.fetchall
@@ -57,7 +57,7 @@ def api_delete_owners(id):
         params = config()
         conn = psycopg2.connect(**params)
         cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute('DELETE FROM "owners" WHERE "id" = %s', (id,))
+        cursor.execute('DELETE FROM "owners" WHERE "id" = %s', (id, ))
         conn.commit()
         cursor.close()
     except (Exception, psycopg2.DatabaseError) as error:
