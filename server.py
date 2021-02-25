@@ -74,7 +74,7 @@ def api_get_pets():
     connection = psycopg2.connect(**params)
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     if request.method == "GET":
-        postgreSQL_select_Query = 'SELECT * FROM "pets";'
+        postgreSQL_select_Query = 'SELECT * FROM "pets" ORDER BY "pet_name";'
         # execute query
         cursor.execute(postgreSQL_select_Query)
         # Selecting rows from table using cursor.fetchall
@@ -89,15 +89,16 @@ def api_get_pets():
         new_color = request.get_json()['color']
         try:
             query = 'INSERT INTO "pets" ("owner_id", "pet_name", "breed", "color") VALUES(%s, %s, %s, %s);'
-            cursor.execute(query, (new_owner_id, new_pet_name, new_breed, new_color, ))
+            cursor.execute(
+                query, (new_owner_id, new_pet_name, new_breed, new_color, ))
             connection.commit()
-            result={'status': 'CREATED'}
+            result = {'status': 'CREATED'}
             return make_response(jsonify(result), 201)
         except (Exception, psycopg2.Error) as error:
             if(connection):
                 print("Failed to insert owner", error)
                 # respond with error
-                result={'status': 'ERROR'}
+                result = {'status': 'ERROR'}
                 return make_response(jsonify(result), 500)
         finally:
             # closing database connection.
@@ -110,41 +111,44 @@ def api_get_pets():
         print('no routes found')
         return 'no routes found'
 
-    # elif request.method == 'POST':
-    #     print('in post')
-    #     owner = request.get_json()['name']
-    #     print(owner)
-    #     try:
-    #         query = 'INSERT INTO "owners" ("name") VALUES (%s);'
-    #         print('in try')
-    #         cursor.execute(query, (owner, ))
-    #         connection.commit()
-    #         result = {'status': 'CREATED'}
-    #         return make_response(jsonify(result), 201)
-    #     except (Exception, psycopg2.Error) as error:
-    #         if(connection):
-    #             print("Failed to insert owner", error)
-    #             # respond with error
-    #             result = {'status': 'ERROR'}
-    #             return make_response(jsonify(result), 500)
-    #     finally:
-    #         # closing database connection.
-    #         if(connection):
-    #             # clean up our connections
-    #             cursor.close()
-    #             connection.close()
-    #             print("PostgreSQL connection is closed")
+
+@app.route('/api/pets/edit', methods=["PUT"])
+def edit_pets():
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    pet_id = request.get_json()['id']
+    status = request.get_json()['status']
+    try:
+        query = 'UPDATE "pets" SET "check_in" = %s WHERE "id" = %s'
+        cursor.execute(query, (status, pet_id, ))
+        connection.commit()
+        result = {'status': 'CREATED'}
+        return make_response(jsonify(result), 201)
+    except (Exception, psycopg2.Error) as error:
+        if(connection):
+            print("Failed to insert owner", error)
+            # respond with error
+            result = {'status': 'ERROR'}
+            return make_response(jsonify(result), 500)
+    finally:
+        # closing database connection.
+        if(connection):
+            # clean up our connections
+            cursor.close()
+            connection.close()
+            print("PostgreSQL connection is closed")
 
 
 # delete pets route
 @ app.route('/api/pets/<id>', methods=["DELETE"])
 def delete(id):
     print(request.args)
-    connection_params=config()
+    connection_params = config()
     # args = config()
-    connection=psycopg2.connect(**connection_params)
-    cursor=connection.cursor(cursor_factory=RealDictCursor)
-    postgreSQL_select_Query='DELETE FROM "pets" WHERE id=%s'
+    connection = psycopg2.connect(**connection_params)
+    cursor = connection.cursor(cursor_factory=RealDictCursor)
+    postgreSQL_select_Query = 'DELETE FROM "pets" WHERE id=%s'
     cursor.execute(postgreSQL_select_Query, (id,))
     connection.commit()
     return make_response(jsonify(id), 200)
