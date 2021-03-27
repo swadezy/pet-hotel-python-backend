@@ -13,9 +13,11 @@ def api_all():
     connection = psycopg2.connect(**params)
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     if request.method == 'GET':
-        query = """SELECT "owners".*, COUNT("pets".id) AS "pet_count" 
-            FROM "owners" LEFT JOIN "pets" ON "owners".id = "pets".owner_id 
-            GROUP BY "owners".id;"""
+        query = """
+        SELECT "owners".*, COUNT("pets".id) AS "pet_count" 
+        FROM "owners" LEFT JOIN "pets" ON "owners".id = "pets".owner_id 
+        GROUP BY "owners".id;
+        """
         # execute query
         cursor.execute(query)
         # Selecting rows from table using cursor.fetchall
@@ -90,7 +92,14 @@ def api_get_pets():
         new_breed = request.get_json()['breed']
         new_color = request.get_json()['color']
         try:
-            query = 'INSERT INTO "pets" ("owner_id", "pet_name", "breed", "color") VALUES(%s, %s, %s, %s);'
+            query = """
+            INSERT INTO "pets" (
+                "owner_id", 
+                "pet_name", 
+                "breed", 
+                "color"
+                ) VALUES(%s, %s, %s, %s);
+            """
             cursor.execute(
                 query, (new_owner_id, new_pet_name, new_breed, new_color, ))
             connection.commit()
