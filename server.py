@@ -13,7 +13,9 @@ def api_all():
     connection = psycopg2.connect(**params)
     cursor = connection.cursor(cursor_factory=RealDictCursor)
     if request.method == 'GET':
-        query = 'SELECT "owners".*, COUNT("pets".id) AS "pet_count" FROM "owners" LEFT JOIN "pets" ON "owners".id = "pets".owner_id GROUP BY "owners".id;'
+        query = """SELECT "owners".*, COUNT("pets".id) AS "pet_count" 
+            FROM "owners" LEFT JOIN "pets" ON "owners".id = "pets".owner_id 
+            GROUP BY "owners".id;"""
         # execute query
         cursor.execute(query)
         # Selecting rows from table using cursor.fetchall
@@ -33,14 +35,14 @@ def api_all():
             result = {'status': 'CREATED'}
             return make_response(jsonify(result), 201)
         except (Exception, psycopg2.Error) as error:
-            if(connection):
+            if (connection):
                 print("Failed to insert owner", error)
                 # respond with error
                 result = {'status': 'ERROR'}
                 return make_response(jsonify(result), 500)
         finally:
             # closing database connection.
-            if(connection):
+            if (connection):
                 # clean up our connections
                 cursor.close()
                 connection.close()
