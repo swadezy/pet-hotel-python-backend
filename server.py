@@ -164,24 +164,5 @@ def delete(id):
 
     return make_response(jsonify(id), 200)
 
-# @app.route ('/api/pets/<id>', methods=["PUT"])
-# def put(id, date):
-#     connection = None
-#     try:
-#         print(request.connection)
-#         connection_params = config()
-#         connection = psycopg2.connect(**params)
-#         cursor = connection.cursor(cursor_factory=RealDictCursor)
-#         postgreSQL_select_Query = 'UPDATE "pets" WHERE id=%s SET "check_in"=%s WHERE id =%s'
-#         cursor.execute(postgreSQL_select_Query, (id))
-#         connection.commit()
-#         cursor.close()
-
-#     except (Exception, psycopg2.DatabaseError) as error:
-#             print(error)
-#     finally:
-#             if connection is not None:
-#                 connection.close()
-
 
 app.run()
