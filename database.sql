@@ -18,7 +18,11 @@ INSERT INTO "owners" ("name")
 VALUES ('Kevin'), ('Mike'), ('Sean'), ('Woody');
 
 INSERT INTO "pets" ("owner_id", "pet_name", "breed", "color", "check_in")
-VALUES (2, 'Dave', 'Black Lab', 'Black', '2/2/2021'), (4, 'Bruce', 'Tabby', 'Brown Striped', '2/22/2021');
+VALUES 
+(2, 'Dave', 'Black Lab', 'Black', '2/2/2021'), 
+(4, 'Bruce', 'Tabby', 'Brown Striped', '2/22/2021');
 
 INSERT INTO "pets" ("owner_id", "pet_name", "breed", "color")
-VALUES (1, 'Roux', 'Golden Lab mix', 'Golden'), (3, 'Carl', 'Pomeranian', 'White');
+VALUES 
+(1, 'Roux', 'Golden Lab mix', 'Golden'), 
+(3, 'Carl', 'Pomeranian', 'White');
